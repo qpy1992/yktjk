@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.FangkeDao">
+   <insert id="invite" parameterType="java.util.Map">
+        insert into z_invite (user_id,fname,fmobile,fdate,flength,freason,project_detail_id)
+        VALUES
+        (#{userid},#{fname},#{fmobile},#{fdate},#{flength},#{freason},#{projectdetail_id})
+   </insert>
+
+   <select id="FkRecord" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.fname,a.fmobile,CONVERT(varchar(100), a.fdate, 20) fdate,a.flength,a.freason,b.fname fname1,c.project_name
+        from z_invite a left join z_project_detail b on b.id=a.project_detail_id left join z_project c on c.id=b.project_id
+        where a.user_id=#{userid} and a.fdate BETWEEN #{starttime} and #{endtime} order by a.fdate desc
+   </select>
+</mapper>

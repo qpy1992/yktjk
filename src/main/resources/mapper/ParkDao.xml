@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.ParkDao">
+    <insert id="ParkIn" parameterType="java.util.Map">
+        insert into ykt_park (plateNo,inTime,parkId)
+        VALUES
+        (#{plateNo},#{inTime},#{parkId})
+    </insert>
+    <select id="selectplateNo" parameterType="java.util.Map" resultType="int">
+        select count(*) from ykt_park where plateNo = #{plateNo}
+    </select>
+
+    <update id="updateParkout" parameterType="java.util.Map">
+        update ykt_park set outTime=#{outTime} where plateNo=#{plateNo}
+    </update>
+
+    <select id="parkingRecordSearch" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from ykt_park where plateNo = #{plateNo}
+    </select>
+
+    <insert id="parkReserve" parameterType="java.util.Map">
+        insert into z_park_reserve (user_id,no,time,length,project_detail_id)
+        VALUES
+        (#{userid},#{no},#{time},#{length},#{project_detail_id})
+    </insert>
+
+    <select id="payRecord" parameterType="java.util.Map" resultType="java.util.Map">
+        select CONVERT(varchar(100), a.time, 20) time,a.paycode,a.amount,b.device_name,b.device_address from z_pay_record a left join z_device_detail b on b.id=a.device_id where a.user_id=#{userid} and a.time BETWEEN #{starttime} and #{endtime} order by a.time desc
+    </select>
+
+    <update id="lock" parameterType="java.util.Map">
+        update ykt_park set fstatus=#{fstatus},unlock_id=#{userid} where plateNo=#{plateno}
+    </update>
+
+    <select id="searchPlate" resultType="java.lang.String">
+        select fplateno from z_chepai where user_id=#{userid}
+    </select>
+
+    <select id="searchStatus" resultType="java.util.Map">
+        select a.plateno,a.fstatus,b.user_name from ykt_park a left join z_project_user b on b.id=a.unlock_id where a.plateno in
+        <foreach item="item" index="index" collection="list" open="("
+                 separator="," close=")">
+        #{item}
+    </foreach>
+    </select>
+
+    <insert id="pay" parameterType="java.util.Map">
+        insert into z_pay_record (user_id,time,device_id,amount,paycode)
+        VALUES
+        (#{userid},#{time},#{device_id},#{amount},#{paycode})
+    </insert>
+</mapper>

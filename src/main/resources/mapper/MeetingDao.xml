@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.MeetingDao">
+    <select id="meetingSearch" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT a.id,CONVERT(varchar(100), a.create_date, 20) create_date,a.meeting_name,a.meeting_content,a.ftype,isnull(b.id,0) fread from z_meeting a
+		 left join z_meeting_read b on b.fmeeting_id=a.id and b.user_id=#{userid} where
+		(1 = (CASE WHEN meeting_user IS NULL THEN 1 ELSE 0 END)
+		OR CHARINDEX(#{userid},a.tels)>0 and 1=1) order by a.create_date desc
+    </select>
+
+    <insert id="insertMeetingRead" parameterType="java.util.Map">
+        insert into z_meeting_read (id,user_id,fmeeting_id)
+        VALUES
+        (NEWID(),#{userid},#{fmeeting_id})
+    </insert>
+
+    <select id="meetingDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select CONVERT(varchar(100), create_date, 20) create_date,meeting_name,meeting_content,meeting_status,meeting_user,ftype from z_meeting where id=#{fmeeting_id}
+    </select>
+</mapper>

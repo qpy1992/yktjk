@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.UserDao">
+    <select id="countMobile" resultType="java.lang.Integer">
+      select count(1) from z_project_user where telephone=#{telephone}
+    </select>
+   
+   <insert id="insertProjectUser" parameterType="java.util.Map">
+        insert into z_project_user (password,user_name,telephone,fstatus)
+        VALUES
+        (#{password},#{username},#{telephone},0)
+    </insert>
+
+    <select id="countProjectUser"  resultType="java.lang.Integer">
+        select count(1) from z_project_user where telephone=#{telephone}
+    </select>
+
+    <select id="login" resultType="java.util.Map">
+        select * from z_project_user where telephone=#{telephone} and  password=#{password}
+    </select>
+
+    <select id="serProjectList" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,project_name from z_project
+    </select>
+
+    <select id="serProjectDetailList" parameterType="java.util.Map" resultType="java.util.Map">
+        select id,fname from z_project_detail where project_id= #{id}
+    </select>
+
+    <select id="serProjectListByTel" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.id,a.project_name from z_project  a  left join  z_user_project b on a.id   = b.project_id   where b.user_id = #{userid}
+    </select>
+
+    <insert id="insertProjectUser1" parameterType="java.util.Map">
+        insert into z_user_project (user_id,project_id,relation,id_pic,faddress,projectdetail_id)
+        VALUES
+        (#{userid},#{project_id},#{relation},#{id_pic},#{faddress},#{project_detail_id})
+    </insert>
+
+    <update id="updatePsw" parameterType="java.util.Map">
+        update z_project_user set
+        password=#{new_psw}
+        where  telephone=#{telephone} and user_name !=''
+    </update>
+
+    <select id="serDetailInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		 select id,user_name,fstatus from z_project_user where id=#{userid}
+    </select>
+
+   <select id="serProjectListByTel1" parameterType="java.util.Map" resultType="java.util.Map">
+       select a.*,b.project_name,c.fname  from z_user_project  a  left join z_project b on b.id=a.project_id  left join z_project_detail c  on c.id = a.projectdetail_id   where a.user_id = #{userid}
+    </select>
+
+    <insert id="addplate" parameterType="java.util.Map">
+        insert into z_chepai (id,user_id,fplateno,fisdefault,fmodel,fcolor)
+        VALUES
+        (NEWID(),#{id},#{plateno},'N',#{model},#{color})
+    </insert>
+
+    <select id="getplate" resultType="org.spring.springboot.domain.Plate">
+        select id,fplateno,fisdefault,fmodel,fcolor from z_chepai where user_id=#{userid} order by case fisdefault when 'Y' then 1 end desc
+    </select>
+
+    <update id="cancelplate" parameterType="java.util.Map">
+        update z_chepai set fisdefault='N' where fisdefault='Y' and user_id=#{userid}
+    </update>
+
+    <update id="changeplate" parameterType="java.util.Map">
+        update z_chepai set fisdefault='Y' where id=#{id}
+    </update>
+
+    <select id="getstatus" resultType="java.lang.String">
+        select fisdefault from z_chepai where id=#{id}
+    </select>
+
+    <delete id="delplate" parameterType="java.util.Map">
+        delete from z_chepai where id=#{id} and user_id=#{userid}
+    </delete>
+
+    <select id="serGoodsList" resultType="java.util.Map">
+        select  id,good_name,good_introduce,good_price,good_pic from  z_good   where  project_id=#{project_id}
+    </select>
+
+    <select id="goodsDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select good_name,good_introduce,good_price,good_pic from z_good where id=#{goodsId}
+    </select>
+</mapper>

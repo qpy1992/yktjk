@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.MenjinDao">
+    <select id="EgDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select CONVERT(varchar(100), a.time, 20) time,b.device_name,b.device_address from z_menjin_detail a left join z_device_detail b on b.id=a.device_id where a.user_id=#{id} and a.time BETWEEN #{starttime} and #{endtime} order by a.time desc
+    </select>
+</mapper>
