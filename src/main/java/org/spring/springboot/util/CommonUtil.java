@@ -41,6 +41,9 @@ public class CommonUtil {
 
 	/**
 	 * 获取4字节的16进制数
+	 * @param number
+	 * @param type
+	 * @return
 	 */
 	public static String getHexString(long number,int type){
 		String hex = Long.toHexString(number);
@@ -53,5 +56,16 @@ public class CommonUtil {
 				}
 		}
 		return hex;
+	}
+
+	public static String getSign(Map<String,String> map){
+		String stringA = "appid="+Consts.WX_APPID+"&body="+Consts.BODY+
+				"&mch_id="+Consts.MCD_ID+"&nonce_str="+map.get("nonce_str")
+				+"&notify_url="+Consts.NOTIFY_URL+"&out_trade_no="+map.get("out_trade_no")+
+				"&spbill_create_ip="+map.get("spbill_create_ip")+"&total_fee="+map.get("fee")+
+				"&trade_type=APP";
+		String stringSignTemp = stringA+"&key="+Consts.KEY;
+		String sign = MD5Util.MD5Encode(stringSignTemp,"utf-8").toUpperCase();
+		return sign;
 	}
 }
